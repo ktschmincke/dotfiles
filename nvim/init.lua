@@ -34,6 +34,7 @@ vim.opt.number         = true               -- line numbers
 vim.opt.relativenumber = true               -- relative line numbers
 vim.opt.scrolloff      = 10                 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.showmode       = false              -- don't show mode
+vim.opt.sidescrolloff  = 5                  -- Minimal number of screen columns to keep to the left and right of the cursor.
 vim.opt.signcolumn     = 'yes'              -- always show sign column so lines don't shift
 vim.opt.smartcase      = true               -- ignore case if search pattern is all lowercase, case-sensitive otherwise
 vim.opt.smarttab       = true               -- use shiftwidth for tabstop

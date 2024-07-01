@@ -1,37 +1,3 @@
-##########
-# prompt #
-##########
-autoload -Uz add-zsh-hook vcs_info
-
-setopt prompt_subst
-
-add-zsh-hook precmd vcs_info
-
-# http://zsh.sourceforge.net/Doc/Release/User-Contributions.html
-# %s - the current version control system, like git or svn
-# %r - the name of the root directory of the repository
-# %S - the current path relative to the repository root directory
-# %b - branch information, like master
-# %m - in case of Git, show information about stashes
-# %u - show unstaged changes in the repository
-# %c - show staged changes in the repository
-autoload -Uz vcs_info
-zstyle ':vcs_info:*' enable git
-zstyle ':vcs_info:*' check-for-changes true
-zstyle ':vcs_info:*' stagedstr '+'
-zstyle ':vcs_info:*' unstagedstr '*'
-zstyle ':vcs_info:*' use-simple true
-zstyle ':vcs_info:git+set-message:*' hooks git-untracked
-zstyle ':vcs_info:git*:*' formats '⎇ %F{13}%b%f %m%c%u'     # default ' (%s)-[%b]%c%u-'
-zstyle ':vcs_info:git*:*' actionformats '[%b|%a%m%c%u]'   # default ' (%s)-[%b|%a]%c%u-'
-
-PROMPT='
-%F{yellow}[%*]%f %B%F{cyan}%~%f%b
-%(?.%F{green}⚡.%F{red}⚡)%f'
-
-RPROMPT='${vcs_info_msg_0_}'
-
-
 #########################
 # environment variables #
 #########################
@@ -49,7 +15,7 @@ export AZURE_TENANT_CLIENT_SECRETS_BY_DOMAIN="stratusinternal.onmicrosoft.com:nO
 export AZURE_EA_CLIENT_SECRET="E.*q6pu/g3F?yVZZq58OsFvygF0mhUrF"
 export AZURE_TENANT_APP_ID=f7cba484-65f3-43e8-8696-123e1f9b9586
 export AZURE_TENANT_CLIENT_SECRET=nOeOFleg7cFWRAxHfHsjmyRSJU+Yg35eg3IwZpf9OHo=
-export POLICY_LIBRARY_URL=https://norlabs-resource-library-staging.s3.amazonaws.com
+export POLICY_LIBRARY_URL=https://kion-resource-library.s3.amazonaws.com/
 export CLOUD_CUSTODIAN_BIN=~/custodian/bin/
 export NSQ_HOST=127.0.0.1
 export NSQ_LOOKUPDHOSTS=127.0.0.1
@@ -69,9 +35,9 @@ export LDFLAGS="-L/usr/local/opt/jpeg/lib"
 export CPPFLAGS="-I/usr/local/opt/jpeg/include"
 export PKG_CONFIG_PATH="/usr/local/opt/jpeg/lib/pkgconfig"
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "/usr/local/opt/nvm/nvm.sh" ] && \. "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
-[ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+# export NVM_DIR="$HOME/.nvm"
+# [ -s "/usr/local/opt/nvm/nvm.sh" ] && \. "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
+# [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
 export PATH="/usr/local/opt/jpeg/bin:$PATH"
 export LDFLAGS="-L/usr/local/opt/jpeg/lib"
@@ -82,6 +48,7 @@ export LDFLAGS="-L/usr/local/opt/mysql-client/lib"
 export CPPFLAGS="-I/usr/local/opt/mysql-client/include"
 export PKG_CONFIG_PATH="/usr/local/opt/mysql-client/lib/pkgconfig"
 
+export CLICOLOR=true
 
 
 
@@ -94,13 +61,12 @@ export PKG_CONFIG_PATH="/usr/local/opt/mysql-client/lib/pkgconfig"
 # global aliases
 alias -g G='| grep'
 alias -g L='| less'
-alias -g M='| more'
 alias -g H='| head'
 alias -g T='| tail'
 
 alias zshconfig="nvim ~/.zshrc"
 alias zshrc="nvim ~/.zshrc"
-alias source-zshrc="source ~/.zshrc"
+alias so="source ~/.zshrc"
 # alias ls="colorls --sort-dirs"
 # alias la="colorls --sort-dirs -a"
 # alias lst="colorls --tree"
@@ -163,5 +129,13 @@ alias vi="nvim"
 # go build src/webapi/main.go -ldflags "-X cloudtamer.io/infrastructure/globalconst.enableLicensing=true"
 
 eval "$(direnv hook zsh)"
+eval "$(starship init zsh)"
+source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
+# Set up fzf key bindings and fuzzy completion
+source <(fzf --zsh)
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=10000
+setopt appendhistory
 
