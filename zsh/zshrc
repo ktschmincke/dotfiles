@@ -76,10 +76,13 @@ alias so="source ~/.zshrc"
 # git aliases
 alias gs="git status"
 alias gst="git status"
-alias gco="git checkout"
 alias gcb="git checkout -b"
 alias gcm="git commit -m"
 alias gcam="git commit -am"
+
+# checkout branch with fzf
+alias gco="git branch --sort=-committerdate | grep -v '^*' | fzf --height=20% --reverse --info=inline | xargs git checkout";
+
 
 function get_current_branch() {
   git branch --show-current
