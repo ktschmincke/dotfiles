@@ -22,10 +22,6 @@ export NSQ_LOOKUPDHOSTS=127.0.0.1
 export WEBAPI_SERVICE_HOST=localhost
 export WEBAPI_SERVICE_PORT=8081
 
-# GitLab vscode extension settings
-export GITLAB_WORKFLOW_INSTANCE_URL=https://git.kion.io/
-export GITLAB_WORKFLOW_TOKEN=glpat-fdFGBCosr8vhyyzsLuWg
-
 export PATH=$HOME/bin:/usr/local/bin:/usr/local/sbin:$GOROOT/bin:$MYSQLROOT/bin:/usr/local/go/bin:$GOPATH/bin:/Users/kevinschmincke/.nimble/bin:/Applications/WezTerm.app/Contents/MacOS:$PATH
 
 # Load Angular CLI autocompletion.
