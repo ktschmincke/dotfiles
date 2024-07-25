@@ -38,6 +38,7 @@ return { -- Fuzzy Finder (files, lsp, etc)
             ['<C-d>'] = actions.delete_buffer + actions.move_to_top,
           },
         },
+        layout_strategy = 'vertical',
         -- Format path as "file.txt (path\to\file\)"
         path_display = function(_, path)
           local tail = require('telescope.utils').path_tail(path)

@@ -26,7 +26,7 @@ export WEBAPI_SERVICE_PORT=8081
 export GITLAB_WORKFLOW_INSTANCE_URL=https://git.kion.io/
 export GITLAB_WORKFLOW_TOKEN=glpat-fdFGBCosr8vhyyzsLuWg
 
-export PATH=$HOME/bin:/usr/local/bin:/usr/local/sbin:$GOROOT/bin:$MYSQLROOT/bin:/usr/local/go/bin:$GOPATH/bin:/Users/kevinschmincke/.nimble/bin:$PATH
+export PATH=$HOME/bin:/usr/local/bin:/usr/local/sbin:$GOROOT/bin:$MYSQLROOT/bin:/usr/local/go/bin:$GOPATH/bin:/Users/kevinschmincke/.nimble/bin:/Applications/WezTerm.app/Contents/MacOS:$PATH
 
 # Load Angular CLI autocompletion.
 # source <(ng completion script)
@@ -35,9 +35,9 @@ export LDFLAGS="-L/usr/local/opt/jpeg/lib"
 export CPPFLAGS="-I/usr/local/opt/jpeg/include"
 export PKG_CONFIG_PATH="/usr/local/opt/jpeg/lib/pkgconfig"
 
-# export NVM_DIR="$HOME/.nvm"
-# [ -s "/usr/local/opt/nvm/nvm.sh" ] && \. "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
-# [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+export NVM_DIR="$HOME/.nvm"
+[ -s "/usr/local/opt/nvm/nvm.sh" ] && \. "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
+[ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
 export PATH="/usr/local/opt/jpeg/bin:$PATH"
 export LDFLAGS="-L/usr/local/opt/jpeg/lib"
@@ -49,6 +49,8 @@ export CPPFLAGS="-I/usr/local/opt/mysql-client/include"
 export PKG_CONFIG_PATH="/usr/local/opt/mysql-client/lib/pkgconfig"
 
 export CLICOLOR=true
+export VISUAL=nvim
+export EDITOR=nvim
 
 
 
