@@ -74,6 +74,12 @@ vim.keymap.set('n', '<C-u>', '<C-u>zz0', { desc = 'Scroll up half a page' })
 vim.keymap.set('n', 'n', 'nzz', { desc = 'Move to next search result' })
 vim.keymap.set('n', 'N', 'Nzz', { desc = 'Move to previous search result' })
 
+-- yank file name and path into system clipboard
+vim.keymap.set('n', '<leader>yfn', ':let @+ = expand("%:t")<CR>', { desc = 'Yank [F]ile [N]ame' })
+vim.keymap.set('n', '<leader>yfp', ':let @+ = expand("%")<CR>', { desc = 'Yank [F]ile [P]ame' })
+
+vim.keymap.set('n', '<leader>bd', ':%bd|e#|bd#<CR>|\'"')
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 

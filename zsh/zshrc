@@ -49,7 +49,24 @@ export VISUAL=nvim
 export EDITOR=nvim
 
 
+############
+# bindings #
+############
+#
+# use vim keybindings in zsh
+bindkey -v
+export KEYTIMEOUT=1
 
+# ctrl-l to complete auto suggestions
+bindkey '^f' forward-char
+
+autoload history-search-end
+zle -N history-beginning-search-backward-end history-search-end
+zle -N history-beginning-search-forward-end history-search-end
+bindkey "\e[A" up-history       # cursor up
+bindkey "\e[B" down-history     # cursor down
+bindkey "^P" history-beginning-search-backward-end  # cursor up
+bindkey "^N" history-beginning-search-forward-end   # cursor down
 
 
 ###########
@@ -77,9 +94,10 @@ alias gst="git status"
 alias gcb="git checkout -b"
 alias gcm="git commit -m"
 alias gcam="git commit -am"
+alias gco="git checkout"
 
 # checkout branch with fzf
-alias gco="git branch --sort=-committerdate | grep -v '^*' | fzf --height=20% --reverse --info=inline | xargs git checkout";
+alias gcof="git branch --sort=-committerdate | grep -v '^*' | fzf --height=20% --reverse --info=inline | xargs git checkout";
 
 
 function get_current_branch() {
