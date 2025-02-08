@@ -4,7 +4,7 @@
 
 export GOROOT=/usr/local/go
 export GOPATH=$HOME/go
-export MYSQLROOT=/usr/local/opt/mysql-client
+
 # For bash or zsh
 export GO111MODULE=on
 export LOCAL_CT_DEV="true"
@@ -22,32 +22,15 @@ export NSQ_LOOKUPDHOSTS=127.0.0.1
 export WEBAPI_SERVICE_HOST=localhost
 export WEBAPI_SERVICE_PORT=8081
 
-export PATH=$HOME/bin:/usr/local/bin:/usr/local/sbin:$GOROOT/bin:$MYSQLROOT/bin:/usr/local/go/bin:$GOPATH/bin:/Users/kevinschmincke/.nimble/bin:/Applications/WezTerm.app/Contents/MacOS:$PATH
+export PATH=$HOME/bin:/usr/local/bin:/usr/local/sbin:$GOROOT/bin:/usr/local/go/bin:$GOPATH/bin:/Users/kevinschmincke/.nimble/bin:/Applications/WezTerm.app/Contents/MacOS:$PATH
+export PATH="/opt/homebrew/opt/mysql-client@8.4/bin:$PATH"
 
 # Load Angular CLI autocompletion.
 # source <(ng completion script)
-export PATH="/usr/local/opt/jpeg/bin:$PATH"
-export LDFLAGS="-L/usr/local/opt/jpeg/lib"
-export CPPFLAGS="-I/usr/local/opt/jpeg/include"
-export PKG_CONFIG_PATH="/usr/local/opt/jpeg/lib/pkgconfig"
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "/usr/local/opt/nvm/nvm.sh" ] && \. "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
-[ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
-
-export PATH="/usr/local/opt/jpeg/bin:$PATH"
-export LDFLAGS="-L/usr/local/opt/jpeg/lib"
-export CPPFLAGS="-I/usr/local/opt/jpeg/include"
-export PKG_CONFIG_PATH="/usr/local/opt/jpeg/lib/pkgconfig"
-export PATH="/usr/local/opt/mysql-client/bin:$PATH"
-export LDFLAGS="-L/usr/local/opt/mysql-client/lib"
-export CPPFLAGS="-I/usr/local/opt/mysql-client/include"
-export PKG_CONFIG_PATH="/usr/local/opt/mysql-client/lib/pkgconfig"
 
 export CLICOLOR=true
 export VISUAL=nvim
 export EDITOR=nvim
-
 
 ############
 # bindings #
@@ -95,6 +78,8 @@ alias gcb="git checkout -b"
 alias gcm="git commit -m"
 alias gcam="git commit -am"
 alias gco="git checkout"
+alias gpo="git pull origin"
+alias gcp="git cherry-pick"
 
 # checkout branch with fzf
 alias gcof="git branch --sort=-committerdate | grep -v '^*' | fzf --height=20% --reverse --info=inline | xargs git checkout";
@@ -119,7 +104,8 @@ alias pidport='pidport_func'
 # fix mouse when gesture buttons aren't working
 # just restarts the logi options+ process, but
 # I'll never remember the command otherwise
-alias fixmouse='killall -9 logioptionsplus_agent'
+# Also resets the bluetooth daemon
+alias fixmouse='killall -9 logioptionsplus_agent && sudo pkill bluetoothd'
 
 # npm aliases
 alias npmplease="rm -rf node_modules/ && rm -f package-lock.json && npm install"
@@ -158,3 +144,7 @@ HISTSIZE=10000
 SAVEHIST=10000
 setopt appendhistory
 
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+export PATH="/opt/homebrew/opt/jpeg/bin:$PATH"
