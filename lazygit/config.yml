@@ -1,0 +1,11 @@
+gui:
+  showFileTree: false
+  showNumstatInFilesView: true
+  showCommandLog: false
+  showPanelJumps: false
+  nerdFontsVersion: 3
+git:
+  paging:
+    colorArg: always
+    useConfig: false
+  branchLogCmd: "git log --graph --color=always --abbrev-commit --decorate --date=relative --pretty=medium --oneline {{branchName}} --"

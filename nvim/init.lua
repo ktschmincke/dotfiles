@@ -78,7 +78,7 @@ vim.keymap.set('n', 'N', 'Nzz', { desc = 'Move to previous search result' })
 
 -- yank file name and path into system clipboard
 vim.keymap.set('n', '<leader>yfn', ':let @+ = expand("%:t")<CR>', { desc = 'Yank [F]ile [N]ame' })
-vim.keymap.set('n', '<leader>yfp', ':let @+ = expand("%")<CR>', { desc = 'Yank [F]ile [P]ame' })
+vim.keymap.set('n', '<leader>yfp', ':let @+ = expand("%")<CR>', { desc = 'Yank [F]ile [P]ath' })
 
 vim.keymap.set('n', '<leader>bd', ':%bd|e#|bd#<CR>|\'"')
 

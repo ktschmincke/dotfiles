@@ -1,12 +1,13 @@
 return { -- Highlight, edit, and navigate code
   'nvim-treesitter/nvim-treesitter',
-  event = {'BufNewFile', 'BufReadPre'},
+  event = { 'BufNewFile', 'BufReadPre' },
   build = ':TSUpdate',
   opts = {
     ensure_installed = { 'angular', 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'tmux', 'typescript', 'vimdoc' },
     auto_install = true,
     highlight = {
       enable = true,
+      additional_vim_regex_highlighting = false,
     },
     indent = { enable = true, disable = { 'ruby' } },
     incremental_selection = {

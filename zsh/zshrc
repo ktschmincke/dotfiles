@@ -2,8 +2,8 @@
 # environment variables #
 #########################
 
-export GOROOT=/usr/local/go
-export GOPATH=$HOME/go
+# export GOROOT=/opt/homebrew/bin/go
+# export GOPATH=$HOME/go
 
 # For bash or zsh
 export GO111MODULE=on
@@ -21,12 +21,14 @@ export NSQ_HOST=127.0.0.1
 export NSQ_LOOKUPDHOSTS=127.0.0.1
 export WEBAPI_SERVICE_HOST=localhost
 export WEBAPI_SERVICE_PORT=8081
+export KION_REDIS_USE_TLS=false
 
-export PATH=$HOME/bin:/usr/local/bin:/usr/local/sbin:$GOROOT/bin:/usr/local/go/bin:$GOPATH/bin:/Users/kevinschmincke/.nimble/bin:/Applications/WezTerm.app/Contents/MacOS:$PATH
-export PATH="/opt/homebrew/opt/mysql-client@8.4/bin:$PATH"
+export PATH=$HOME/bin:/usr/local/bin:/usr/local/sbin:/usr/local/go/bin:/Users/kevinschmincke/.nimble/bin:/Applications/WezTerm.app/Contents/MacOS:$PATH
+export PATH="/opt/homebrew/bin:$PATH"
+export XDG_CONFIG_HOME="$HOME/.config"
 
 # Load Angular CLI autocompletion.
-# source <(ng completion script)
+source <(ng completion script)
 
 export CLICOLOR=true
 export VISUAL=nvim
@@ -101,12 +103,6 @@ pidport_func() {
 
 alias pidport='pidport_func'
 
-# fix mouse when gesture buttons aren't working
-# just restarts the logi options+ process, but
-# I'll never remember the command otherwise
-# Also resets the bluetooth daemon
-alias fixmouse='killall -9 logioptionsplus_agent && sudo pkill bluetoothd'
-
 # npm aliases
 alias npmplease="rm -rf node_modules/ && rm -f package-lock.json && npm install"
 alias ni="npm install"
@@ -147,4 +143,3 @@ setopt appendhistory
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-export PATH="/opt/homebrew/opt/jpeg/bin:$PATH"

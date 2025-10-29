@@ -205,6 +205,8 @@ return {
   'echasnovski/mini.nvim',
   version = '*',
   config = function()
+    require('mini.bracketed').setup()
+    require('mini.cursorword').setup()
     require('mini.pick').setup {
       source = {
         show = custom_show,
@@ -214,6 +216,11 @@ return {
       },
     }
     require('mini.extra').setup()
+    require('mini.comment').setup()
+    require('mini.pairs').setup()
+    require('mini.ai').setup()
+    require('mini.surround').setup()
+    require('mini.files').setup()
 
     vim.keymap.set('n', '<leader>t', '<CMD>Pick files<CR>')
     vim.keymap.set('n', '<leader>T', '<CMD>Pick grep_live<CR>')
@@ -223,5 +230,9 @@ return {
     vim.keymap.set('n', '<leader>ph', '<CMD>Pick help<CR>')
     vim.keymap.set('n', '<leader>pr', '<CMD>Pick resume<CR>')
     vim.keymap.set('n', '<leader>pk', '<CMD>Pick keymaps<CR>')
+
+    vim.keymap.set('n', '-', '<CMD>lua MiniFiles.open(vim.api.nvim_buf_get_name(0))<CR>')
+
+    vim.cmd 'highlight! link MiniPickCurrentMatch Directory'
   end,
 }
