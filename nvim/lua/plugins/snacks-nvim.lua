@@ -11,10 +11,24 @@ return {
     lazygit = { enabled = true },
     notifier = { enabled = true },
     scope = { enabled = true },
+    scratch = { enabled = true },
     statuscolumn = { enabled = true },
     win = { enabled = true },
   },
-  config = function()
-    vim.keymap.set('n', '<leader>lg', ':lua Snacks.lazygit()<CR>')
-  end,
+  keys = {
+    {
+      '<leader>.',
+      function()
+        Snacks.scratch()
+      end,
+      desc = 'Toggle Scratch Buffer',
+    },
+    {
+      '<leader>S',
+      function()
+        Snacks.scratch.select()
+      end,
+      desc = 'Select Scratch Buffer',
+    },
+  },
 }

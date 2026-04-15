@@ -28,4 +28,14 @@ config.font_size = 14.0
 config.hide_tab_bar_if_only_one_tab = true
 config.window_padding = { left = 0, right = 0, top = 0, bottom = 0 }
 
+-- key bindings
+config.keys = {
+	-- Send distinct escape sequence for Shift+Enter (for Claude Code newlines)
+	{
+		key = "Enter",
+		mods = "SHIFT",
+		action = wezterm.action.SendString("\x1b[13;2u"),
+	},
+}
+
 return config
