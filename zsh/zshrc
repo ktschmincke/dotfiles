@@ -2,33 +2,13 @@
 # environment variables #
 #########################
 
-# export GOROOT=/opt/homebrew/bin/go
-# export GOPATH=$HOME/go
+source ~/.zprofile
 
-# For bash or zsh
-export GO111MODULE=on
-export LOCAL_CT_DEV="true"
-export CT_SERVICE_USER_SUFFIX="-"$USER
-export CT_ENV="aws"
-export AZURE_TENANT_APP_IDS_BY_DOMAIN="stratusinternal.onmicrosoft.com:f7cba484-65f3-43e8-8696-123e1f9b9586,stratustinternalgov.onmicrosoft.com:b3e0cb3e-adbd-4e0e-8160-804e8e2a89af"
-export AZURE_TENANT_CLIENT_SECRETS_BY_DOMAIN="stratusinternal.onmicrosoft.com:nOeOFleg7cFWRAxHfHsjmyRSJU+Yg35eg3IwZpf9OHo=,stratusinternalgov.onmicrosoft.com:IWK-SOqaS6iLFB2@b]C=lq1xM0GuV/-0"
-export AZURE_EA_CLIENT_SECRET="E.*q6pu/g3F?yVZZq58OsFvygF0mhUrF"
-export AZURE_TENANT_APP_ID=f7cba484-65f3-43e8-8696-123e1f9b9586
-export AZURE_TENANT_CLIENT_SECRET=nOeOFleg7cFWRAxHfHsjmyRSJU+Yg35eg3IwZpf9OHo=
-export POLICY_LIBRARY_URL=https://kion-resource-library.s3.amazonaws.com/
-export CLOUD_CUSTODIAN_BIN=~/custodian/bin/
-export NSQ_HOST=127.0.0.1
-export NSQ_LOOKUPDHOSTS=127.0.0.1
-export WEBAPI_SERVICE_HOST=localhost
-export WEBAPI_SERVICE_PORT=8081
-export KION_REDIS_USE_TLS=false
 
 export PATH=$HOME/bin:/usr/local/bin:/usr/local/sbin:/usr/local/go/bin:/Users/kevinschmincke/.nimble/bin:/Applications/WezTerm.app/Contents/MacOS:$PATH
 export PATH="/opt/homebrew/bin:$PATH"
 export XDG_CONFIG_HOME="$HOME/.config"
 
-# Load Angular CLI autocompletion.
-source <(ng completion script)
 
 export CLICOLOR=true
 export VISUAL=nvim
@@ -59,7 +39,7 @@ bindkey "^N" history-beginning-search-forward-end   # cursor down
 ###########
 
 # global aliases
-alias -g G='| grep'
+alias -g G='| grep -v grep | grep'
 alias -g L='| less'
 alias -g H='| head'
 alias -g T='| tail'
@@ -110,24 +90,9 @@ alias nci="npm ci"
 alias ns="npm start"
 alias sb="npm run storybook"
 
-# portal directory aliases
-export MY_KION_DIR=~/dev/kion/portal
-alias webapi="cd $MY_KION_DIR/src/app/webapi"
-alias client="cd $MY_KION_DIR/src/app/webui/client"
-alias portal="cd $MY_KION_DIR"
-alias ui="client"
-
-# portal webapi migrate/reset commands
-alias dbreset="portal && make db-reset-full-demo-data && webapi && go build && ./webapi"
-alias dbmigrate="portal && make db-migrate && webapi && go build && ./webapi"
-alias dbconnect="mysql -u root -h 127.0.0.1 -p"
-
 # don't accidentally open vim instead of neovim
 alias vim="nvim"
 alias vi="nvim"
-
-# If you need to run the webapi with licensing turned on, you can run this:
-# go build src/webapi/main.go -ldflags "-X cloudtamer.io/infrastructure/globalconst.enableLicensing=true"
 
 eval "$(direnv hook zsh)"
 eval "$(starship init zsh)"
@@ -140,6 +105,3 @@ HISTSIZE=10000
 SAVEHIST=10000
 setopt appendhistory
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
