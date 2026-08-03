@@ -38,10 +38,19 @@ vim.opt.sidescrolloff  = 5                  -- Minimal number of screen columns 
 vim.opt.signcolumn     = 'yes'              -- always show sign column so lines don't shift
 vim.opt.smartcase      = true               -- ignore case if search pattern is all lowercase, case-sensitive otherwise
 vim.opt.smarttab       = true               -- use shiftwidth for tabstop
-vim.opt.spell          = true               -- don't spellcheck by default
+vim.opt.spell          = true               -- spellcheck everywhere, including code:
+                                            -- catches typos in comments. With treesitter
+                                            -- highlighting active this is limited to
+                                            -- @spell captures (comments and strings).
+vim.opt.spelloptions    = 'camel'           -- split camelCase into words, so getUserNmae
+                                            -- flags only 'Nmae' rather than the whole word
 vim.opt.splitbelow     = true               -- open new splits below
 vim.opt.splitright     = true               -- open new splits to the right
-vim.opt.textwidth      = 80                 -- wrap lines at 80 characters
+                                            -- NOTE: textwidth is deliberately NOT set
+                                            -- globally -- it hard-wraps code as you type.
+                                            -- Prose filetypes get it via autocmd below;
+                                            -- code relies on prettier/stylua printWidth,
+                                            -- with colorcolumn as the visual guide.
 vim.opt.undofile       = true               -- save undo history to file
 vim.opt.updatetime     = 250                -- decrease update time
 vim.opt.wrap           = false              -- don't wrap lines by default
@@ -58,17 +67,15 @@ vim.opt.wrap           = false              -- don't wrap lines by default
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
+-- NOTE: ]d and [d are Neovim defaults since 0.10, so they are not remapped here.
+-- (The old mappings used vim.diagnostic.goto_prev/goto_next, both deprecated in
+-- favour of vim.diagnostic.jump.)
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
--- Use CTRL+<hjkl> to switch between windows
--- See `:help wincmd` for a list of all window commands
-vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+-- NOTE: <C-hjkl> window navigation is owned by vim-tmux-navigator, which maps
+-- the same keys and also hands off to tmux at the edges. Defining plain
+-- <C-w> equivalents here as well only shadowed it confusingly.
 
 -- center the screen when moving up and down, and when searching
 vim.keymap.set('n', '<C-d>', '<C-d>zz0', { desc = 'Scroll down half a page' })
@@ -80,29 +87,38 @@ vim.keymap.set('n', 'N', 'Nzz', { desc = 'Move to previous search result' })
 vim.keymap.set('n', '<leader>yfn', ':let @+ = expand("%:t")<CR>', { desc = 'Yank [F]ile [N]ame' })
 vim.keymap.set('n', '<leader>yfp', ':let @+ = expand("%")<CR>', { desc = 'Yank [F]ile [P]ath' })
 
-vim.keymap.set('n', '<leader>bd', ':%bd|e#|bd#<CR>|\'"')
-
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
 -- Highlight when yanking (copying) text
 --  Try it with `yap` in normal mode
---  See `:help vim.highlight.on_yank()`
+--  See `:help vim.hl.on_yank()`
 vim.api.nvim_create_autocmd('TextYankPost', {
   desc = 'Highlight when yanking (copying) text',
-  group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
+  group = vim.api.nvim_create_augroup('highlight-yank', { clear = true }),
   callback = function()
-    vim.highlight.on_yank()
+    vim.hl.on_yank()
+  end,
+})
+
+-- Hard-wrap prose at 80 columns. Deliberately not global: textwidth wraps code
+-- as you type, and prettier/stylua already enforce width for code.
+vim.api.nvim_create_autocmd('FileType', {
+  desc = 'Wrap prose filetypes at 80 columns',
+  group = vim.api.nvim_create_augroup('prose-textwidth', { clear = true }),
+  pattern = { 'markdown', 'gitcommit', 'text' },
+  callback = function()
+    vim.opt_local.textwidth = 80
   end,
 })
 
 -- Install `lazy.nvim` plugin manager
 -- See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
-if not vim.loop.fs_stat(lazypath) then
+if not vim.uv.fs_stat(lazypath) then
   local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
   vim.fn.system { 'git', 'clone', '--filter=blob:none', '--branch=stable', lazyrepo, lazypath }
-end ---@diagnostic disable-next-line: undefined-field
+end
 vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup 'plugins'

@@ -1,55 +1,36 @@
+-- On-save linters only.
+--
+-- eslint is deliberately NOT here -- it runs as a language server instead (see
+-- nvim-lsp-config.lua), which gives realtime incremental diagnostics from one
+-- warm process, covers the `htmlangular` filetype, and resolves monorepo configs
+-- natively. nvim-lint would re-lint whole buffers via a cold process.
+--
+-- stylelint has no daemon, so every run is a cold Node process. Realtime linting
+-- would spawn one per edit, which is the thing that actually drags performance.
+-- On-save is the right trade. nvim-lint resolves it from node_modules/.bin, so
+-- the project's version, config and plugins are used and diagnostics match what
+-- the pre-commit hook reports.
+
 return {
+  'mfussenegger/nvim-lint',
+  event = { 'BufReadPre', 'BufNewFile' },
+  config = function()
+    local lint = require 'lint'
 
-  { -- Linting
-    'mfussenegger/nvim-lint',
-    event = { 'BufReadPre', 'BufNewFile' },
-    config = function()
-      local lint = require 'lint'
-      lint.linters_by_ft = {
-        markdown = { 'markdownlint' },
-      }
+    lint.linters_by_ft = {
+      css = { 'stylelint' },
+      scss = { 'stylelint' },
+      less = { 'stylelint' },
+      markdown = { 'markdownlint' },
+    }
 
-      -- To allow other plugins to add linters to require('lint').linters_by_ft,
-      -- instead set linters_by_ft like this:
-      -- lint.linters_by_ft = lint.linters_by_ft or {}
-      -- lint.linters_by_ft['markdown'] = { 'markdownlint' }
-      --
-      -- However, note that this will enable a set of default linters,
-      -- which will cause errors unless these tools are available:
-      -- {
-      --   clojure = { "clj-kondo" },
-      --   dockerfile = { "hadolint" },
-      --   inko = { "inko" },
-      --   janet = { "janet" },
-      --   json = { "jsonlint" },
-      --   markdown = { "vale" },
-      --   rst = { "vale" },
-      --   ruby = { "ruby" },
-      --   terraform = { "tflint" },
-      --   text = { "vale" }
-      -- }
-      --
-      -- You can disable the default linters by setting their filetypes to nil:
-      -- lint.linters_by_ft['clojure'] = nil
-      -- lint.linters_by_ft['dockerfile'] = nil
-      -- lint.linters_by_ft['inko'] = nil
-      -- lint.linters_by_ft['janet'] = nil
-      -- lint.linters_by_ft['json'] = nil
-      -- lint.linters_by_ft['markdown'] = nil
-      -- lint.linters_by_ft['rst'] = nil
-      -- lint.linters_by_ft['ruby'] = nil
-      -- lint.linters_by_ft['terraform'] = nil
-      -- lint.linters_by_ft['text'] = nil
-
-      -- Create autocommand which carries out the actual linting
-      -- on the specified events.
-      local lint_augroup = vim.api.nvim_create_augroup('lint', { clear = true })
-      vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost', 'InsertLeave' }, {
-        group = lint_augroup,
-        callback = function()
-          require('lint').try_lint()
-        end,
-      })
-    end,
-  },
+    -- On save only. The previous BufEnter/InsertLeave triggers meant a cold
+    -- stylelint process on every insert-mode exit.
+    vim.api.nvim_create_autocmd('BufWritePost', {
+      group = vim.api.nvim_create_augroup('lint', { clear = true }),
+      callback = function()
+        lint.try_lint()
+      end,
+    })
+  end,
 }

@@ -9,7 +9,6 @@ return {
         dark = 'mocha',
       },
       integrations = {
-        alpha = true,
         gitsigns = true,
         mini = {
           enabled = true,
