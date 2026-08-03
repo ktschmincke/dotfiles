@@ -25,16 +25,16 @@ return {
     input = { enabled = true },
     lazygit = { enabled = true },
     notifier = { enabled = true },
-    -- the default layout is width/height 0.8 with no row/col, i.e. centered
-    picker = { enabled = true },
+    picker = { enabled = true }, -- default layout is centered
+
     scope = { enabled = true },
     scratch = { enabled = true },
     statuscolumn = { enabled = true },
     win = { enabled = true },
   },
   keys = {
-    -- <leader>f* is the picker namespace. Nothing else may claim a bare
-    -- <leader>f mapping, or every one of these stalls for `timeoutlen`.
+    -- <leader>f* is the picker namespace. Don't map a bare <leader>f, or all of
+    -- these stall waiting for `timeoutlen`.
     {
       '<leader>ff',
       function()

@@ -1,15 +1,10 @@
--- On-save linters only.
+-- On-save linters only. These have no daemon, so each run is a cold process and
+-- linting on every edit would be slow.
 --
--- eslint is deliberately NOT here -- it runs as a language server instead (see
--- nvim-lsp-config.lua), which gives realtime incremental diagnostics from one
--- warm process, covers the `htmlangular` filetype, and resolves monorepo configs
--- natively. nvim-lint would re-lint whole buffers via a cold process.
+-- eslint is absent here on purpose: it runs as a language server instead, which
+-- gets realtime diagnostics from one warm process. See nvim-lsp-config.lua.
 --
--- stylelint has no daemon, so every run is a cold Node process. Realtime linting
--- would spawn one per edit, which is the thing that actually drags performance.
--- On-save is the right trade. nvim-lint resolves it from node_modules/.bin, so
--- the project's version, config and plugins are used and diagnostics match what
--- the pre-commit hook reports.
+-- Binaries resolve from node_modules/.bin, so the project's config is used.
 
 return {
   'mfussenegger/nvim-lint',
@@ -24,8 +19,6 @@ return {
       markdown = { 'markdownlint' },
     }
 
-    -- On save only. The previous BufEnter/InsertLeave triggers meant a cold
-    -- stylelint process on every insert-mode exit.
     vim.api.nvim_create_autocmd('BufWritePost', {
       group = vim.api.nvim_create_augroup('lint', { clear = true }),
       callback = function()

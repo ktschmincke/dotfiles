@@ -1,21 +1,18 @@
--- Replaces nvim-cmp + LuaSnip + cmp_luasnip + cmp-nvim-lsp + cmp-path.
 -- Snippet support is built in, so no separate snippet engine is needed.
 
 return {
   'saghen/blink.cmp',
-  -- version = '*' pulls a release with a prebuilt fuzzy-matcher binary.
-  -- Without it, blink wants a local Rust toolchain to build from source.
+  -- a release tag is required for the prebuilt fuzzy matcher; building from
+  -- source needs a Rust toolchain
   version = '*',
   event = 'InsertEnter',
   opts = {
     keymap = {
-      -- the default preset already matches the old nvim-cmp bindings:
-      --   <C-y> accept, <C-n>/<C-p> next/prev, <C-b>/<C-f> scroll docs,
-      --   <C-space> show completions, <C-e> hide
+      -- <C-y> accept, <C-n>/<C-p> next/prev, <C-b>/<C-f> scroll docs,
+      -- <C-space> show, <C-e> hide
       preset = 'default',
 
-      -- ...except snippet navigation, which defaulted to <Tab>/<S-Tab>.
-      -- Keep the previous <C-l>/<C-h>.
+      -- override the preset's <Tab>/<S-Tab> snippet navigation
       ['<C-l>'] = { 'snippet_forward', 'fallback' },
       ['<C-h>'] = { 'snippet_backward', 'fallback' },
     },
@@ -38,8 +35,7 @@ return {
       },
     },
 
-    -- warn rather than silently fall back to the slow Lua matcher if the
-    -- prebuilt binary is missing
+    -- warn instead of silently falling back to the slow Lua matcher
     fuzzy = { implementation = 'prefer_rust_with_warning' },
   },
 }

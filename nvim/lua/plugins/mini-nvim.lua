@@ -24,9 +24,6 @@ return {
       MiniFiles.open(vim.api.nvim_buf_get_name(0))
     end, { desc = 'Open parent directory' })
 
-    -- NOTE: mini.comment is deliberately absent -- Neovim ships `gc` since 0.10.
-    -- mini.pick and mini.extra were replaced by snacks.picker, which centers its
-    -- window by default and needed none of the ~200 lines of helpers this file
-    -- used to carry.
+    -- No mini.comment: Neovim ships `gc`. No mini.pick: snacks owns pickers.
   end,
 }

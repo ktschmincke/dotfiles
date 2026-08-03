@@ -11,6 +11,9 @@ vim.g.have_nerd_font = true
 ----------------
 
 -- See `:help vim.keymap.set()`
+
+-- keep the value/comment columns aligned
+-- stylua: ignore start
 vim.opt.autoindent     = true               -- automatically indent new lines
 vim.opt.autoread       = true               -- automatically reload files when changed outside of vim
 vim.opt.backspace      = 'indent,eol,start' -- allow backspacing over everything in insert mode
@@ -38,22 +41,16 @@ vim.opt.sidescrolloff  = 5                  -- Minimal number of screen columns 
 vim.opt.signcolumn     = 'yes'              -- always show sign column so lines don't shift
 vim.opt.smartcase      = true               -- ignore case if search pattern is all lowercase, case-sensitive otherwise
 vim.opt.smarttab       = true               -- use shiftwidth for tabstop
-vim.opt.spell          = true               -- spellcheck everywhere, including code:
-                                            -- catches typos in comments. With treesitter
-                                            -- highlighting active this is limited to
-                                            -- @spell captures (comments and strings).
-vim.opt.spelloptions    = 'camel'           -- split camelCase into words, so getUserNmae
-                                            -- flags only 'Nmae' rather than the whole word
+vim.opt.spell          = true               -- spellcheck code too, for comments
+vim.opt.spelloptions   = 'camel'            -- treat camelCase as separate words
 vim.opt.splitbelow     = true               -- open new splits below
 vim.opt.splitright     = true               -- open new splits to the right
-                                            -- NOTE: textwidth is deliberately NOT set
-                                            -- globally -- it hard-wraps code as you type.
-                                            -- Prose filetypes get it via autocmd below;
-                                            -- code relies on prettier/stylua printWidth,
-                                            -- with colorcolumn as the visual guide.
+                                            -- textwidth is set per-filetype below, not
+                                            -- globally, so it can't hard-wrap code
 vim.opt.undofile       = true               -- save undo history to file
 vim.opt.updatetime     = 250                -- decrease update time
 vim.opt.wrap           = false              -- don't wrap lines by default
+-- stylua: ignore end
 
 -------------------------------------------------
 --                                             --
@@ -66,16 +63,11 @@ vim.opt.wrap           = false              -- don't wrap lines by default
 -- clear search highlights on <Esc>
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
--- Diagnostic keymaps
--- NOTE: ]d and [d are Neovim defaults since 0.10, so they are not remapped here.
--- (The old mappings used vim.diagnostic.goto_prev/goto_next, both deprecated in
--- favour of vim.diagnostic.jump.)
+-- Diagnostic keymaps. ]d and [d are Neovim defaults; don't re-add them.
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
--- NOTE: <C-hjkl> window navigation is owned by vim-tmux-navigator, which maps
--- the same keys and also hands off to tmux at the edges. Defining plain
--- <C-w> equivalents here as well only shadowed it confusingly.
+-- <C-hjkl> window navigation is owned by vim-tmux-navigator.
 
 -- center the screen when moving up and down, and when searching
 vim.keymap.set('n', '<C-d>', '<C-d>zz0', { desc = 'Scroll down half a page' })
@@ -101,8 +93,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
--- Hard-wrap prose at 80 columns. Deliberately not global: textwidth wraps code
--- as you type, and prettier/stylua already enforce width for code.
+-- Code width is left to prettier/stylua, so only prose gets a hard wrap.
 vim.api.nvim_create_autocmd('FileType', {
   desc = 'Wrap prose filetypes at 80 columns',
   group = vim.api.nvim_create_augroup('prose-textwidth', { clear = true }),

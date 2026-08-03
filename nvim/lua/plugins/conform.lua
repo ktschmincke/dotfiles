@@ -1,10 +1,7 @@
--- Formatting only. Linting lives in lint.lua (stylelint, markdownlint) and in
--- the eslint language server (see nvim-lsp-config.lua).
+-- Formatting only. Linting lives in lint.lua and the eslint language server.
 --
--- conform resolves prettier/prettierd via util.from_node_modules(), so the
--- project's own binary in node_modules/.bin wins over Mason's global copy. That
--- means the project's prettier version, config and plugins are always used, and
--- formatting matches what the pre-commit hook produces.
+-- Web formatters resolve from node_modules/.bin before Mason's copies, so the
+-- project's own version and config are used.
 
 return {
   'stevearc/conform.nvim',
@@ -35,22 +32,19 @@ return {
     },
   },
   opts = function()
-    -- prettier and prettierd, preferring the daemon. Repeated across every web
-    -- filetype, so build it once.
+    -- shared by every web filetype below
     local prettier = { 'prettierd', 'prettier', stop_after_first = true }
 
     return {
       notify_on_error = false,
       format_on_save = function(bufnr)
-        -- Languages without a standardised style. NOTE: scss used to be listed
-        -- here, which silently prevented every SCSS file from ever formatting.
+        -- languages without a standardised style
         local disable_filetypes = { c = true, cpp = true }
         if disable_filetypes[vim.bo[bufnr].filetype] then
           return nil
         end
         return {
-          -- 500ms was too tight for prettierd's daemon cold start
-          timeout_ms = 2000,
+          timeout_ms = 2000, -- prettierd's daemon can be slow to start
           lsp_format = 'fallback',
         }
       end,
@@ -58,10 +52,8 @@ return {
         lua = { 'stylua' },
         go = { 'goimports', 'gofmt' },
 
-        -- Angular templates resolve to filetype `htmlangular`, NOT `html`, as
-        -- soon as they contain Angular syntax (*ngIf, @if, ...). Registering
-        -- only `html` is why template formatting appeared to work at random:
-        -- plain .html files formatted, real components never did.
+        -- Angular templates are filetype `htmlangular`, not `html`, once they
+        -- contain Angular syntax. Both are needed.
         html = prettier,
         htmlangular = prettier,
 
