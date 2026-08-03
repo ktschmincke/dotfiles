@@ -1,1 +1,7 @@
 .DS_Store
+
+# Karabiner rewrites a backup on every config change
+karabiner/automatic_backups/
+
+# design docs stay local
+docs/
