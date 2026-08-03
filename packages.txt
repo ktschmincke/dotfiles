@@ -1,0 +1,12 @@
+# Names are identical on brew, apt and pacman.
+
+git
+tmux
+fzf
+direnv
+zsh-autosuggestions
+neovim
+tree-sitter-cli
+starship
+lazygit
+

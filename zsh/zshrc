@@ -2,13 +2,26 @@
 # environment variables #
 #########################
 
-source ~/.zprofile
+# keep PATH free of duplicates
+typeset -U path PATH
 
+path=(
+  $HOME/bin
+  /usr/local/bin
+  /usr/local/sbin
+  /usr/local/go/bin
+  $path
+)
 
-export PATH=$HOME/bin:/usr/local/bin:/usr/local/sbin:/usr/local/go/bin:/Users/kevinschmincke/.nimble/bin:/Applications/WezTerm.app/Contents/MacOS:$PATH
-export PATH="/opt/homebrew/bin:$PATH"
+for _brew in /opt/homebrew /usr/local /home/linuxbrew/.linuxbrew; do
+  if [[ -x "$_brew/bin/brew" ]]; then
+    eval "$("$_brew/bin/brew" shellenv)"
+    break
+  fi
+done
+unset _brew
+
 export XDG_CONFIG_HOME="$HOME/.config"
-
 
 export CLICOLOR=true
 export VISUAL=nvim
@@ -17,12 +30,12 @@ export EDITOR=nvim
 ############
 # bindings #
 ############
-#
+
 # use vim keybindings in zsh
 bindkey -v
 export KEYTIMEOUT=1
 
-# ctrl-l to complete auto suggestions
+# ctrl-f to accept the rest of an autosuggestion
 bindkey '^f' forward-char
 
 autoload history-search-end
@@ -32,7 +45,6 @@ bindkey "\e[A" up-history       # cursor up
 bindkey "\e[B" down-history     # cursor down
 bindkey "^P" history-beginning-search-backward-end  # cursor up
 bindkey "^N" history-beginning-search-forward-end   # cursor down
-
 
 ###########
 # aliases #
@@ -47,11 +59,6 @@ alias -g T='| tail'
 alias zshconfig="nvim ~/.zshrc"
 alias zshrc="nvim ~/.zshrc"
 alias so="source ~/.zshrc"
-# alias ls="colorls --sort-dirs"
-# alias la="colorls --sort-dirs -a"
-# alias lst="colorls --tree"
-# alias lsgs="colorls --gs --sort-dirs"
-# alias lsgst="colorls --gs --tree"
 
 # git aliases
 alias gs="git status"
@@ -65,7 +72,6 @@ alias gcp="git cherry-pick"
 
 # checkout branch with fzf
 alias gcof="git branch --sort=-committerdate | grep -v '^*' | fzf --height=20% --reverse --info=inline | xargs git checkout";
-
 
 function get_current_branch() {
   git branch --show-current
@@ -94,14 +100,67 @@ alias sb="npm run storybook"
 alias vim="nvim"
 alias vi="nvim"
 
-eval "$(direnv hook zsh)"
-eval "$(starship init zsh)"
-source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+#########
+# tools #
+#########
 
-# Set up fzf key bindings and fuzzy completion
-source <(fzf --zsh)
+# guarded so a missing tool is not a startup error
+command -v direnv   >/dev/null && eval "$(direnv hook zsh)"
+command -v starship >/dev/null && eval "$(starship init zsh)"
+command -v ng       >/dev/null && source <(ng completion script)
+
+# fzf shell integration (`--zsh` needs fzf >= 0.48)
+if command -v fzf >/dev/null; then
+  _fzf_init="$(fzf --zsh 2>/dev/null)" && [[ -n "$_fzf_init" ]] && eval "$_fzf_init"
+  unset _fzf_init
+fi
+
+# zsh-autosuggestions installs to a different path on every platform
+for _autosuggest in \
+  ${HOMEBREW_PREFIX:+$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh} \
+  /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh \
+  /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+do
+  if [[ -r "$_autosuggest" ]]; then
+    source "$_autosuggest"
+    break
+  fi
+done
+unset _autosuggest
+
+export NVM_DIR="$HOME/.nvm"
+
+# Put the default node on PATH by reading the alias files. Sourcing nvm.sh at
+# all costs ~45ms, and letting it activate a version costs ~900ms because `nvm
+# use` shells out to node and npm.
+_nvm_v=""
+[[ -r "$NVM_DIR/alias/default" ]] && _nvm_v="$(<"$NVM_DIR/alias/default")"
+[[ -n "$_nvm_v" && -r "$NVM_DIR/alias/$_nvm_v" ]] && _nvm_v="$(<"$NVM_DIR/alias/$_nvm_v")"
+if [[ -n "$_nvm_v" ]]; then
+  _nvm_bin=("$NVM_DIR/versions/node/${_nvm_v}"*/bin(N))
+  (( $#_nvm_bin )) && path=("${_nvm_bin[1]}" $path)
+fi
+unset _nvm_v _nvm_bin
+
+# node/npm/npx come from PATH above, so nvm itself only has to exist when an
+# `nvm` subcommand is actually run.
+if [[ -s "$NVM_DIR/nvm.sh" ]]; then
+  nvm() {
+    unfunction nvm
+    source "$NVM_DIR/nvm.sh" --no-use
+    [[ -s "$NVM_DIR/bash_completion" ]] && source "$NVM_DIR/bash_completion"
+    nvm "$@"
+  }
+fi
+
+###########
+# history #
+###########
+
 HISTFILE=~/.zsh_history
 HISTSIZE=10000
 SAVEHIST=10000
 setopt appendhistory
+
+[[ -r ~/.zshrc.local ]] && source ~/.zshrc.local
 
