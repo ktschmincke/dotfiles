@@ -2,30 +2,20 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
-vim.g.have_nerd_font = true
-
 ----------------
 --            --
 --  Settings  --
 --            --
 ----------------
 
--- See `:help vim.keymap.set()`
-
--- keep the value/comment columns aligned
 -- stylua: ignore start
-vim.opt.autoindent     = true               -- automatically indent new lines
-vim.opt.autoread       = true               -- automatically reload files when changed outside of vim
-vim.opt.backspace      = 'indent,eol,start' -- allow backspacing over everything in insert mode
-vim.opt.belloff        = 'all'              -- disable all bells
 vim.opt.breakindent    = true               -- keep wrapped lines indented
 vim.opt.clipboard      = 'unnamedplus'      -- use system clipboard
 vim.opt.confirm        = true               -- confirm before closing unsaved buffers
 vim.opt.colorcolumn    = '80'               -- highlight column 80
-vim.opt.cursorline     = true               -- Show which line your cursor is on
-vim.opt.hlsearch       = true               -- highlight search results
+vim.opt.cursorline     = true               -- show which line the cursor is on
 vim.opt.ignorecase     = true               -- ignore case when searching
-vim.opt.inccommand     = 'split'            -- Preview substitutions live, as you type!
+vim.opt.inccommand     = 'split'            -- preview :s substitutions as you type
 vim.opt.list           = true               -- show whitespace chars
 vim.opt.listchars      = {                  -- configure whitespace chars
   nbsp                 = '␣',
@@ -35,12 +25,11 @@ vim.opt.listchars      = {                  -- configure whitespace chars
 vim.opt.mouse          = 'a'                -- enable mouse support
 vim.opt.number         = true               -- line numbers
 vim.opt.relativenumber = true               -- relative line numbers
-vim.opt.scrolloff      = 10                 -- Minimal number of screen lines to keep above and below the cursor.
+vim.opt.scrolloff      = 10                 -- keep 10 lines above/below the cursor
 vim.opt.showmode       = false              -- don't show mode
-vim.opt.sidescrolloff  = 5                  -- Minimal number of screen columns to keep to the left and right of the cursor.
+vim.opt.sidescrolloff  = 5                  -- keep 5 columns left/right of the cursor
 vim.opt.signcolumn     = 'yes'              -- always show sign column so lines don't shift
-vim.opt.smartcase      = true               -- ignore case if search pattern is all lowercase, case-sensitive otherwise
-vim.opt.smarttab       = true               -- use shiftwidth for tabstop
+vim.opt.smartcase      = true               -- case-sensitive search if the pattern has capitals
 vim.opt.spell          = true               -- spellcheck code too, for comments
 vim.opt.spelloptions   = 'camel'            -- treat camelCase as separate words
 vim.opt.splitbelow     = true               -- open new splits below
@@ -79,12 +68,6 @@ vim.keymap.set('n', 'N', 'Nzz', { desc = 'Move to previous search result' })
 vim.keymap.set('n', '<leader>yfn', ':let @+ = expand("%:t")<CR>', { desc = 'Yank [F]ile [N]ame' })
 vim.keymap.set('n', '<leader>yfp', ':let @+ = expand("%")<CR>', { desc = 'Yank [F]ile [P]ath' })
 
--- [[ Basic Autocommands ]]
---  See `:help lua-guide-autocommands`
-
--- Highlight when yanking (copying) text
---  Try it with `yap` in normal mode
---  See `:help vim.hl.on_yank()`
 vim.api.nvim_create_autocmd('TextYankPost', {
   desc = 'Highlight when yanking (copying) text',
   group = vim.api.nvim_create_augroup('highlight-yank', { clear = true }),
@@ -103,8 +86,7 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 
--- Install `lazy.nvim` plugin manager
--- See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
+-- bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.uv.fs_stat(lazypath) then
   local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
