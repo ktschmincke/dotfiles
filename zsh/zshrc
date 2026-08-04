@@ -108,6 +108,7 @@ alias vi="nvim"
 command -v direnv   >/dev/null && eval "$(direnv hook zsh)"
 command -v starship >/dev/null && eval "$(starship init zsh)"
 command -v ng       >/dev/null && source <(ng completion script)
+command -v zoxide   >/dev/null && eval "$(zoxide init zsh)"
 
 # fzf shell integration (`--zsh` needs fzf >= 0.48)
 if command -v fzf >/dev/null; then
