@@ -28,8 +28,38 @@ return {
     },
   },
   config = function()
-    -- Only the mappings Neovim doesn't already provide. grn, gra, grr, gri, grt,
-    -- gO and K are all defaults -- don't re-add them.
+    -- Show LSP locations in a centered picker instead of the quickfix window.
+    -- angularls and ts_ls both answer textDocument/references and vim.lsp.buf.*
+    -- concatenates every client's results, so dedupe by position or each location
+    -- gets listed twice.
+    local function show_in_picker(title)
+      return function(list)
+        local items, seen = {}, {}
+        for _, item in ipairs(list.items) do
+          local key = ('%s:%d:%d'):format(item.filename, item.lnum, item.col)
+          if not seen[key] then
+            seen[key] = true
+            table.insert(items, {
+              text = item.filename .. ' ' .. item.text,
+              file = item.filename,
+              pos = { item.lnum, item.col - 1 },
+              line = item.text,
+            })
+          end
+        end
+        Snacks.picker.pick {
+          title = title,
+          items = items,
+          format = 'file',
+          auto_confirm = true,
+          jump = { tagstack = true, reuse_win = true },
+        }
+      end
+    end
+
+    -- Only the mappings Neovim doesn't provide, plus overrides routing the
+    -- location requests through show_in_picker. grn, gra, gO and K are defaults --
+    -- don't re-add them.
     vim.api.nvim_create_autocmd('LspAttach', {
       group = vim.api.nvim_create_augroup('lsp-attach', { clear = true }),
       callback = function(event)
@@ -37,8 +67,23 @@ return {
           vim.keymap.set('n', keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
         end
 
-        map('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
+        map('gd', function()
+          vim.lsp.buf.definition { on_list = show_in_picker 'Definitions' }
+        end, '[G]oto [D]efinition')
+
         map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+
+        map('gri', function()
+          vim.lsp.buf.implementation { on_list = show_in_picker 'Implementations' }
+        end, '[G]oto [I]mplementations')
+
+        map('grt', function()
+          vim.lsp.buf.type_definition { on_list = show_in_picker 'Type definitions' }
+        end, '[G]oto [T]ype definitions')
+
+        map('grr', function()
+          vim.lsp.buf.references(nil, { on_list = show_in_picker 'References' })
+        end, '[G]oto [R]eferences')
 
         -- Highlight other references to the symbol under the cursor while it rests.
         local client = vim.lsp.get_client_by_id(event.data.client_id)
