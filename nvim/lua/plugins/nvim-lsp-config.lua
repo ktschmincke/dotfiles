@@ -28,37 +28,36 @@ return {
     },
   },
   config = function()
-    -- Show LSP locations in a centered picker instead of the quickfix window.
-    -- angularls and ts_ls both answer textDocument/references and vim.lsp.buf.*
-    -- concatenates every client's results, so dedupe by position or each location
-    -- gets listed twice.
-    local function show_in_picker(title)
-      return function(list)
-        local items, seen = {}, {}
-        for _, item in ipairs(list.items) do
-          local key = ('%s:%d:%d'):format(item.filename, item.lnum, item.col)
-          if not seen[key] then
-            seen[key] = true
-            table.insert(items, {
-              text = item.filename .. ' ' .. item.text,
-              file = item.filename,
-              pos = { item.lnum, item.col - 1 },
-              line = item.text,
-            })
-          end
+    -- angularls and ts_ls both attach to TypeScript and answer with the same
+    -- locations, so dedupe by position or each one gets listed twice.
+    local function dedupe_positions()
+      local seen = {}
+      return function(item)
+        local key = ('%s:%d:%d'):format(item.file or '', item.pos and item.pos[1] or 0, item.pos and item.pos[2] or 0)
+        if seen[key] then
+          return false
         end
-        Snacks.picker.pick {
-          title = title,
-          items = items,
-          format = 'file',
-          auto_confirm = true,
-          jump = { tagstack = true, reuse_win = true },
+        seen[key] = true
+        return true
+      end
+    end
+
+    -- snacks' LSP sources request each client separately and render answers as
+    -- they arrive; vim.lsp.buf.* waits for all of them. On the first call in a
+    -- project angularls spends ~18s building its TS program, so that difference is
+    -- 0.9s versus 19s. show_delay is lowered because the default 5s only applies
+    -- while a client is outstanding, which is exactly the cold case.
+    local function locations(source)
+      return function()
+        Snacks.picker[source] {
+          transform = dedupe_positions(),
+          show_delay = 200,
         }
       end
     end
 
     -- Only the mappings Neovim doesn't provide, plus overrides routing the
-    -- location requests through show_in_picker. grn, gra, gO and K are defaults --
+    -- location requests through a picker. grn, gra, gO and K are defaults --
     -- don't re-add them.
     vim.api.nvim_create_autocmd('LspAttach', {
       group = vim.api.nvim_create_augroup('lsp-attach', { clear = true }),
@@ -67,23 +66,11 @@ return {
           vim.keymap.set('n', keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
         end
 
-        map('gd', function()
-          vim.lsp.buf.definition { on_list = show_in_picker 'Definitions' }
-        end, '[G]oto [D]efinition')
-
+        map('gd', locations 'lsp_definitions', '[G]oto [D]efinition')
         map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
-
-        map('gri', function()
-          vim.lsp.buf.implementation { on_list = show_in_picker 'Implementations' }
-        end, '[G]oto [I]mplementations')
-
-        map('grt', function()
-          vim.lsp.buf.type_definition { on_list = show_in_picker 'Type definitions' }
-        end, '[G]oto [T]ype definitions')
-
-        map('grr', function()
-          vim.lsp.buf.references(nil, { on_list = show_in_picker 'References' })
-        end, '[G]oto [R]eferences')
+        map('gri', locations 'lsp_implementations', '[G]oto [I]mplementations')
+        map('grt', locations 'lsp_type_definitions', '[G]oto [T]ype definitions')
+        map('grr', locations 'lsp_references', '[G]oto [R]eferences')
 
         -- Highlight other references to the symbol under the cursor while it rests.
         local client = vim.lsp.get_client_by_id(event.data.client_id)
