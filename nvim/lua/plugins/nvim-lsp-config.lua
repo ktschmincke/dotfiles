@@ -137,6 +137,10 @@ return {
         'lua-language-server',
         'typescript-language-server',
 
+        -- debug adapters (wired up in nvim-dap.lua)
+        'delve',
+        'js-debug-adapter',
+
         -- formatters and linters with no project-local equivalent
         'markdownlint',
         'stylua',

@@ -77,6 +77,13 @@ return {
       end,
       desc = 'Find diagnostics',
     },
+    {
+      '<leader>fp',
+      function()
+        Snacks.picker()
+      end,
+      desc = 'Find pickers',
+    },
 
     -- muscle-memory aliases; neither is a prefix of anything
     {
