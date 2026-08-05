@@ -131,6 +131,8 @@ return {
       desc = 'Select Scratch Buffer',
     },
 
+    -- <leader>g* is git. Anything that opens a window lives here; gutter signs
+    -- and hunk actions are buffer-local maps in gitsigns.lua.
     {
       '<leader>gg',
       function()
@@ -144,6 +146,55 @@ return {
         Snacks.gitbrowse()
       end,
       desc = 'Git browse',
+    },
+    {
+      '<leader>gl',
+      function()
+        Snacks.picker.git_log_file()
+      end,
+      desc = 'Git log: this file',
+    },
+    {
+      '<leader>gL',
+      function()
+        Snacks.picker.git_log_line()
+      end,
+      desc = 'Git log: this line',
+    },
+    {
+      '<leader>gc',
+      function()
+        Snacks.picker.git_log()
+      end,
+      desc = 'Git log: commits',
+    },
+    {
+      '<leader>gd',
+      function()
+        Snacks.picker.git_diff()
+      end,
+      desc = 'Git diff hunks',
+    },
+    {
+      '<leader>gs',
+      function()
+        Snacks.picker.git_status()
+      end,
+      desc = 'Git status',
+    },
+    {
+      '<leader>gS',
+      function()
+        Snacks.picker.git_stash()
+      end,
+      desc = 'Git stash',
+    },
+    {
+      '<leader>gr',
+      function()
+        Snacks.picker.git_branches()
+      end,
+      desc = 'Git branches',
     },
   },
 }

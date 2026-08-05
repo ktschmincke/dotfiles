@@ -1,4 +1,6 @@
-# Names are identical on brew, apt and pacman.
+# Names are identical on brew, apt and pacman, but not every repo carries every
+# name. install.sh reports what it can't find and carries on, so listing a
+# package only some systems have is safe.
 
 git
 tmux
