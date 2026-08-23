@@ -5,6 +5,8 @@ return {
     spec = {
       { '<leader>d', group = 'debug' },
       { '<leader>dg', group = 'go' },
+      { '<leader>g', group = 'git' },
+      { '<leader>gh', group = 'hunk' },
     },
   },
   keys = {
