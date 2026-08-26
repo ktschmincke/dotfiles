@@ -165,3 +165,6 @@ setopt appendhistory
 
 [[ -r ~/.zshrc.local ]] && source ~/.zshrc.local
 
+FPATH="$HOME/.docker/completions:$FPATH"
+autoload -Uz compinit
+compinit
