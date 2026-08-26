@@ -70,6 +70,9 @@ alias gco="git checkout"
 alias gpo="git pull origin"
 alias gcp="git cherry-pick"
 
+alias cd=z
+alias ls=eza
+
 # checkout branch with fzf
 alias gcof="git branch --sort=-committerdate | grep -v '^*' | fzf --height=20% --reverse --info=inline | xargs git checkout";
 
@@ -153,6 +156,14 @@ if [[ -s "$NVM_DIR/nvm.sh" ]]; then
     nvm "$@"
   }
 fi
+
+function y() {
+  local tmp cwd; tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
+  command yazi "$@" --cwd-file="$tmp"
+  IFS= read -r -d '' cwd < "$tmp"
+  [ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && builtin cd -- "$cwd" || builtin true
+  command rm -f -- "$tmp"
+}
 
 ###########
 # history #
